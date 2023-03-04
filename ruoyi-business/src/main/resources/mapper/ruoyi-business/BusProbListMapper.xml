@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.bus.mapper.BusProbListMapper">
+
+
+    <resultMap type="BusProbList" id="BusProbListResult">
+        <result property="probListId"    column="prob_list_id"    />
+        <result property="probListNum"    column="prob_list_num"    />
+        <result property="probListName"    column="prob_list_name"    />
+        <result property="probIscompleted"  column="prob_iscompleted"   />
+        <result property="probListDescrip"    column="prob_list_descrip"    />
+        <result property="probListSource"    column="prob_list_source"    />
+        <result property="probListStartTime"    column="prob_list_start_time"    />
+        <result property="probListEndTime"    column="prob_list_end_time"    />
+        <result property="probListAta"    column="prob_list_ATA"    />
+        <result property="deptId"    column="dept_id"    />
+        <result property="probListActualEndTime"    column="prob_list_actual_end_time"    />
+        <result property="probListHead"    column="prob_list_head"    />
+        <result property="probListOurHead"    column="prob_list_our_head"    />
+        <result property="probListStatus"    column="prob_list_status"    />
+        <result property="probListEvaluation"    column="prob_list_evaluation"    />
+        <result property="probStar"    column="prob_star"    />
+        <result property="probIsoptimize" column="prob_isoptimize"   />
+        <result property="probListClas"    column="prob_list_clas"    />
+        <result property="probListTag"    column="prob_list_tag"    />
+        <result property="probListTips"    column="prob_list_tips"    />
+    </resultMap>
+
+    <resultMap type="BusProbStar" id="BusProbStarResult">
+        <result property="probStarId"    column="sub_prob_star_id"    />
+        <result property="probListId"    column="sub_star_prob_list_id"    />
+        <result property="probStar"    column="sub_prob_star"    />
+        <result property="probStarBasis"    column="sub_prob_star_basis"    />
+        <result property="probStarTime"    column="sub_prob_star_time"    />
+    </resultMap>
+
+    <resultMap type="BusProbProcess" id="BusProbProcessResult">
+        <result property="probProcessId" column="prob_process_id" />
+        <result property="probListId" column="sub_process_prob_list_id" />
+    </resultMap>
+    
+    <resultMap  type="BusProbReason" id="BusProbReasonResult">
+        <result property="probReasonId" column="sub_prob_reason_id"  />
+        <result property="probProcessId" column="sub_reason_prob_process_id"  />
+        <result property="probReason" column="sub_prob_reason" />
+    </resultMap>
+
+    <resultMap type="BusProbTempSolution" id="BusProbTempSolutionResult">
+        <result property="probTempSolutionId"    column="sub_prob_temp_solution_id"    />
+        <result property="probProcessId"    column="sub_temp_prob_process_id"    />
+        <result property="probTempSolution"    column="sub_prob_temp_solution"    />
+        <result property="probTempCat"    column="sub_prob_temp_cat"    />
+        <result property="probTempFileNum"    column="sub_prob_temp_file_num"    />
+        <result property="probTempStatus"    column="sub_prob_temp_status"    />
+    </resultMap>
+
+    <resultMap type="BusProbFinalSolution" id="BusProbFinalSolutionResult">
+        <result property="probFinalSolutionId"    column="sub_prob_final_solution_id"    />
+        <result property="probProcessId"    column="sub_final_prob_process_id"    />
+        <result property="probFinalSolution"    column="sub_prob_final_solution"    />
+        <result property="probMi"    column="sub_prob_MI"    />
+        <result property="probFinalStatus"    column="sub_prob_final_status"    />
+    </resultMap>
+
+    <resultMap id="BusProbListSubResult" type="BusProbList" extends="BusProbListResult">
+        <collection property="busProbStarList" notNullColumn="sub_prob_star_id" javaType="java.util.List" resultMap="BusProbStarResult" />
+        <collection property="busProbReason" notNullColumn="sub_prob_reason_id" javaType="com.ruoyi.bus.domain.probListDomain.BusProbReason" resultMap="BusProbReasonResult" />
+        <collection property="busProbTempSolutionList" notNullColumn="sub_prob_temp_solution_id" javaType="java.util.List" resultMap="BusProbTempSolutionResult" />
+        <collection property="busProbFinalSolutionList" notNullColumn="sub_prob_final_solution_id" javaType="java.util.List" resultMap="BusProbFinalSolutionResult" />
+    </resultMap>
+
+
+    <sql id="selectBusProbListVo">
+        select prob_list_id, prob_list_num, prob_list_name, prob_iscompleted, prob_list_descrip, prob_list_source, prob_list_start_time, prob_list_end_time, prob_list_ATA, dept_id, prob_list_actual_end_time, prob_list_head, prob_list_our_head, prob_list_status, prob_list_evaluation, prob_star, prob_isoptimize, prob_list_clas, prob_list_tag, prob_list_tips from bus_prob_list
+    </sql>
+
+    <select id="selectBusProbListList" parameterType="BusProbList" resultMap="BusProbListResult">
+        <include refid="selectBusProbListVo"/>
+        <where>  
+            <if test="probListNum != null  and probListNum != ''"> and prob_list_num = #{probListNum}</if>
+            <if test="probListName != null  and probListName != ''"> and prob_list_name like concat('%', #{probListName}, '%')</if>
+            <if test="probIscompleted != null "> and prob_iscompleted = #{probIscompleted}</if>
+            <if test="probListSource != null "> and prob_list_source = #{probListSource}</if>
+            <if test="probListStartTime != null "> and prob_list_start_time = #{probListStartTime}</if>
+            <if test="probListEndTime != null "> and prob_list_end_time = #{probListEndTime}</if>
+            <if test="probListAta != null "> and prob_list_ATA = #{probListAta}</if>
+            <if test="deptId != null "> and dept_id = #{deptId}</if>
+            <if test="probListActualEndTime != null "> and prob_list_actual_end_time = #{probListActualEndTime}</if>
+            <if test="probListHead != null  and probListHead != ''"> and prob_list_head = #{probListHead}</if>
+            <if test="probListOurHead != null  and probListOurHead != ''"> and prob_list_our_head = #{probListOurHead}</if>
+            <if test="probListStatus != null "> and prob_list_status = #{probListStatus}</if>
+            <if test="probListEvaluation != null  and probListEvaluation != ''"> and prob_list_evaluation = #{probListEvaluation}</if>
+            <if test="probStar != null "> and prob_star = #{probStar}</if>
+            <if test="probIsoptimize != null "> and prob_isoptimize = #{probIsoptimize}</if>
+            <if test="probListTag != null  and probListTag != ''"> and prob_list_tag = #{probListTag}</if>
+        </where>
+    </select>
+
+    <select id="selectBusProbListWithSubList" parameterType="BusProbList" resultMap="BusProbListSubResult">
+        select a.prob_list_id, a.prob_list_num, a.prob_list_name, a.prob_iscompleted, a.prob_list_descrip, a.prob_list_source, a.prob_list_start_time, a.prob_list_end_time, a.prob_list_ATA, a.dept_id, a.prob_list_actual_end_time, a.prob_list_head, a.prob_list_our_head, a.prob_list_status, a.prob_list_evaluation, a.prob_star, a.prob_isoptimize, a.prob_list_clas, a.prob_list_tag, a.prob_list_tips,
+        f.prob_final_solution_id as sub_prob_final_solution_id, f.prob_process_id as sub_final_prob_process_id, f.prob_final_solution as sub_prob_final_solution, f.prob_MI as sub_prob_MI, f.prob_final_status as sub_prob_final_status,
+        t.prob_temp_solution_id as sub_prob_temp_solution_id, t.prob_process_id as sub_temp_prob_process_id, t.prob_temp_solution as sub_prob_temp_solution,t.prob_temp_cat as sub_prob_temp_cat,t.prob_temp_file_num as sub_prob_temp_file_num,t.prob_temp_status as sub_prob_temp_status,
+        from bus_prob_list a
+        left join bus_prob_final_solution f on f.prob_list_id = a.prob_list_id
+        left join bus_prob_temp_solution t on t.prob_list_id = a.prob_list_id
+        <where>
+            <if test="probListNum != null  and probListNum != ''"> and a.prob_list_num = #{probListNum}</if>
+            <if test="probListName != null  and probListName != ''"> and a.prob_list_name like concat('%', #{probListName}, '%')</if>
+            <if test="probIscompleted != null "> and a.prob_iscompleted = #{probIscompleted}</if>
+            <if test="probListSource != null "> and a.prob_list_source = #{probListSource}</if>
+            <if test="probListStartTime != null "> and a.prob_list_start_time = #{probListStartTime}</if>
+            <if test="probListEndTime != null "> and a.prob_list_end_time = #{probListEndTime}</if>
+            <if test="probListAta != null "> and a.prob_list_ATA = #{probListAta}</if>
+            <if test="deptId != null "> and a.dept_id = #{deptId}</if>
+            <if test="probListActualEndTime != null "> and a.prob_list_actual_end_time = #{probListActualEndTime}</if>
+            <if test="probListHead != null  and probListHead != ''"> and a.prob_list_head = #{probListHead}</if>
+            <if test="probListOurHead != null  and probListOurHead != ''"> and a.prob_list_our_head = #{probListOurHead}</if>
+            <if test="probListStatus != null "> and a.prob_list_status = #{probListStatus}</if>
+            <if test="probListEvaluation != null  and probListEvaluation != ''"> and a.prob_list_evaluation = #{probListEvaluation}</if>
+            <if test="probStar != null "> and a.prob_star = #{probStar}</if>
+            <if test="probIsoptimize != null "> and a.prob_isoptimize = #{probIsoptimize}</if>
+            <if test="probListTag != null  and probListTag != ''"> and a.prob_list_tag = #{probListTag}</if>
+        </where>
+    </select>
+    
+    <select id="selectBusProbListByProbListId" resultMap="BusProbListSubResult">
+        select a.prob_list_id, a.prob_list_num, a.prob_list_name, a.prob_iscompleted, a.prob_list_descrip, a.prob_list_source, a.prob_list_start_time, a.prob_list_end_time, a.prob_list_ATA, a.dept_id, a.prob_list_actual_end_time, a.prob_list_head, a.prob_list_our_head, a.prob_list_status, a.prob_list_evaluation, a.prob_star, a.prob_isoptimize, a.prob_list_clas, a.prob_list_tag, a.prob_list_tips,
+ f.prob_final_solution_id as sub_prob_final_solution_id, f.prob_process_id as sub_final_prob_process_id, f.prob_final_solution as sub_prob_final_solution, f.prob_MI as sub_prob_MI, f.prob_final_status as sub_prob_final_status,
+ t.prob_temp_solution_id as sub_prob_temp_solution_id, t.prob_process_id as sub_temp_prob_process_id, t.prob_temp_solution as sub_prob_temp_solution,t.prob_temp_cat as sub_prob_temp_cat,t.prob_temp_file_num as sub_prob_temp_file_num,t.prob_temp_status as sub_prob_temp_status,
+ r.prob_reason_id as sub_prob_reason_id, r.prob_process_id as sub_reason_prob_process_id,  r.prob_reason as sub_prob_reason,
+ s.prob_star as sub_prob_star,s.prob_star_basis as sub_prob_star_basis,s.prob_star_time as sub_prob_star_time
+        from
+            (
+            select bus_prob_list.prob_list_id , bus_prob_list.prob_list_num, bus_prob_list.prob_list_name, prob_iscompleted, bus_prob_list.prob_list_descrip,  prob_list_source, prob_list_start_time, prob_list_end_time, prob_list_ATA, dept_id, prob_list_actual_end_time, prob_list_head, prob_list_our_head, prob_list_status, prob_list_evaluation, prob_star, prob_isoptimize, prob_list_clas, prob_list_tag, prob_list_tips, p.prob_process_id as prob_process_id, p.prob_current_process, p.prob_process_num
+            from bus_prob_list left join bus_prob_process p on  bus_prob_list.prob_list_id = p.prob_list_id
+            where p.prob_current_process = 1
+            order by p.prob_process_num desc limit 1
+            ) a
+        left join bus_prob_final_solution f on f.prob_process_id = a.prob_process_id
+        left join bus_prob_temp_solution t on t.prob_process_id = a.prob_process_id
+        left join bus_prob_reason r on r.prob_process_id = a.prob_process_id
+        left join (select * from bus_prob_star where prob_list_id = #{probListId} order by prob_star_time desc limit 1) s on s.prob_list_id = a.prob_list_id
+        where a.prob_list_id = #{probListId}
+    </select>
+
+    <select id="selectBusProbListWithAllStarByProbListId"  resultMap="BusProbListSubResult">
+        select a.prob_list_id, a.prob_list_num, a.prob_list_name, a.prob_iscompleted, a.prob_list_descrip, a.prob_list_source, a.prob_list_start_time, a.prob_list_end_time, a.prob_list_ATA, a.dept_id, a.prob_list_actual_end_time, a.prob_list_head, a.prob_list_our_head, a.prob_list_status, a.prob_list_evaluation, a.prob_star, a.prob_isoptimize, a.prob_list_clas, a.prob_list_tag, a.prob_list_tips,
+ f.prob_final_solution as sub_prob_final_solution, f.prob_MI as sub_prob_MI, f.prob_final_status as sub_prob_final_status,
+ t.prob_temp_solution as sub_prob_temp_solution,t.prob_temp_cat as sub_prob_temp_cat,t.prob_temp_file_num as sub_prob_temp_file_num,t.prob_temp_status as sub_prob_temp_status,
+ r.prob_reason as sub_prob_reason,
+ s.prob_star as sub_prob_star,s.prob_star_basis as sub_prob_star_basis,s.prob_star_time as sub_prob_star_time
+        from
+            (
+            select bus_prob_list.prob_list_id , bus_prob_list.prob_list_num, bus_prob_list.prob_list_name, prob_iscompleted, bus_prob_list.prob_list_descrip,  prob_list_source, prob_list_start_time, prob_list_end_time, prob_list_ATA, dept_id, prob_list_actual_end_time, prob_list_head, prob_list_our_head, prob_list_status, prob_list_evaluation, prob_star, prob_isoptimize, prob_list_clas, prob_list_tag, prob_list_tips, p.prob_process_id as prob_process_id, p.prob_current_process, p.prob_process_num
+            from bus_prob_list left join bus_prob_process p on  bus_prob_list.prob_list_id = p.prob_list_id
+            where p.prob_current_process = 1
+            order by p.prob_process_num desc limit 1
+            ) a
+        left join bus_prob_final_solution f on f.prob_process_id = a.prob_process_id
+        left join bus_prob_temp_solution t on t.prob_process_id = a.prob_process_id
+        left join bus_prob_reason r on r.prob_process_id = a.prob_process_id
+        left join (select * from bus_prob_star where prob_list_id = #{probListId} order by prob_star_time desc) s on s.prob_list_id = a.prob_list_id
+        where a.prob_list_id = #{probListId}
+    </select>
+        
+    <insert id="insertBusProbList" parameterType="BusProbList" useGeneratedKeys="true" keyProperty="probListId">
+        insert into bus_prob_list
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="probListNum != null">prob_list_num,</if>
+            <if test="probListName != null">prob_list_name,</if>
+            <if test="probIscompleted != null ">prob_iscompleted,</if>
+            <if test="probListDescrip != null">prob_list_descrip,</if>
+            <if test="probListSource != null">prob_list_source,</if>
+            <if test="probListStartTime != null">prob_list_start_time,</if>
+            <if test="probListEndTime != null">prob_list_end_time,</if>
+            <if test="probListAta != null">prob_list_ATA,</if>
+            <if test="deptId != null">dept_id,</if>
+            <if test="probListActualEndTime != null">prob_list_actual_end_time,</if>
+            <if test="probListHead != null">prob_list_head,</if>
+            <if test="probListOurHead != null">prob_list_our_head,</if>
+            <if test="probListStatus != null">prob_list_status,</if>
+            <if test="probListEvaluation != null">prob_list_evaluation,</if>
+            <if test="probStar != null">prob_star,</if>
+            <if test="probIsoptimize != null ">prob_isoptimize,</if>
+            <if test="probListClas != null">prob_list_clas,</if>
+            <if test="probListTag != null">prob_list_tag,</if>
+            <if test="probListTips != null">prob_list_tips,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="probListNum != null">#{probListNum},</if>
+            <if test="probListName != null">#{probListName},</if>
+            <if test="probIscompleted != null ">#{probIscompleted},</if>
+            <if test="probListDescrip != null">#{probListDescrip},</if>
+            <if test="probListSource != null">#{probListSource},</if>
+            <if test="probListStartTime != null">#{probListStartTime},</if>
+            <if test="probListEndTime != null">#{probListEndTime},</if>
+            <if test="probListAta != null">#{probListAta},</if>
+            <if test="deptId != null">#{deptId},</if>
+            <if test="probListActualEndTime != null">#{probListActualEndTime},</if>
+            <if test="probListHead != null">#{probListHead},</if>
+            <if test="probListOurHead != null">#{probListOurHead},</if>
+            <if test="probListStatus != null">#{probListStatus},</if>
+            <if test="probListEvaluation != null">#{probListEvaluation},</if>
+            <if test="probStar != null">#{probStar},</if>
+            <if test="probIsoptimize != null ">#{probIsoptimize},</if>
+            <if test="probListClas != null">#{probListClas},</if>
+            <if test="probListTag != null">#{probListTag},</if>
+            <if test="probListTips != null">#{probListTips},</if>
+         </trim>
+    </insert>
+
+    <update id="updateBusProbList" parameterType="BusProbList">
+        update bus_prob_list
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="probListNum != null">prob_list_num = #{probListNum},</if>
+            <if test="probListName != null">prob_list_name = #{probListName},</if>
+            <if test="probIscompleted != null ">prob_iscompleted = #{probIscompleted},</if>
+            <if test="probListDescrip != null">prob_list_descrip = #{probListDescrip},</if>
+            <if test="probListSource != null">prob_list_source = #{probListSource},</if>
+            <if test="probListStartTime != null">prob_list_start_time = #{probListStartTime},</if>
+            <if test="probListEndTime != null">prob_list_end_time = #{probListEndTime},</if>
+            <if test="probListAta != null">prob_list_ATA = #{probListAta},</if>
+            <if test="deptId != null">dept_id = #{deptId},</if>
+            <if test="probListActualEndTime != null">prob_list_actual_end_time = #{probListActualEndTime},</if>
+            <if test="probListHead != null">prob_list_head = #{probListHead},</if>
+            <if test="probListOurHead != null">prob_list_our_head = #{probListOurHead},</if>
+            <if test="probListStatus != null">prob_list_status = #{probListStatus},</if>
+            <if test="probListEvaluation != null">prob_list_evaluation = #{probListEvaluation},</if>
+            <if test="probStar != null">prob_star = #{probStar},</if>
+            <if test="probIsoptimize != null ">prob_isoptimize = #{probIsoptimize},</if>
+            <if test="probListClas != null">prob_list_clas = #{probListClas},</if>
+            <if test="probListTag != null">prob_list_tag = #{probListTag},</if>
+            <if test="probListTips != null">prob_list_tips = #{probListTips},</if>
+        </trim>
+        where prob_list_id = #{probListId}
+    </update>
+
+    <delete id="deleteBusProbListByProbListId" >
+        delete from bus_prob_list where prob_list_id = #{probListId}
+    </delete>
+
+    <delete id="deleteBusProbListByProbListIds" parameterType="String">
+        delete from bus_prob_list where prob_list_id in 
+        <foreach item="probListId" collection="array" open="(" separator="," close=")">
+            #{probListId}
+        </foreach>
+    </delete>
+
+</mapper>

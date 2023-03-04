@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+        <!DOCTYPE mapper
+                PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+                "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.bus.mapper.ProbChartMapper">
+
+    <resultMap id="ChartMap" type="ChartRModel">
+        <result property="name" column="modelName"/>
+        <result property="value" column="modelValue"/>
+    </resultMap>
+
+    <resultMap id="DictMap" type="SysDictKVModel">
+        <result property="label" column="dictMapLabel"/>
+        <result property="value" column="dictMapValue"/>
+    </resultMap>
+
+    <select id="selectMonthlyShouldCompleteProb" resultMap="ChartMap">
+        select count(*) as modelValue,LEFT(prob_list_end_time,7) as modelName
+        from bus_prob_list
+        group by modelName
+        order by modelName
+    </select>
+
+    <select id="selectMonthlyIsCompletedProb" resultMap="ChartMap">
+        select count(*) as modelValue,LEFT(prob_list_actual_end_time,7) as modelName
+        from bus_prob_list
+        where prob_list_actual_end_time is true
+        group by modelName
+        order by modelName
+    </select>
+
+    <select id="selectDeptProb" resultMap="ChartMap">
+        select count(*) as modelValue,dept_id as modelName
+        from bus_prob_list
+        where prob_iscompleted = 0
+        group by modelName
+    </select>
+
+    <select id="selectLightProb" resultMap="ChartMap">
+        select count(*) as modelValue,prob_list_status as modelName
+        from bus_prob_list
+        where prob_iscompleted = 0 and prob_list_status is not null
+        group by modelName
+    </select>
+
+    <select id="selectSysDictKV" resultMap="DictMap">
+        select dict_label as dictMapLabel, dict_value as dictMapValue
+		from sys_dict_data
+		where dict_type = #{dictType}
+    </select>
+
+
+</mapper>

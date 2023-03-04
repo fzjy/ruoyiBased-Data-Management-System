@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.bus.mapper.BusProbSubListMapper">
+
+
+    <resultMap type="BusProbProcess" id="BusProbProcessResult">
+        <result property="probProcessId"    column="prob_process_id"    />
+        <result property="probListId"    column="prob_list_id"    />
+        <result property="probListNum"    column="prob_list_num"    />
+        <result property="probListName"    column="prob_list_name"    />
+        <result property="probListDescrip"    column="prob_list_descrip"    />
+        <result property="probCurrentProcess" column="prob_current_process" />
+        <result property="probProcessNum" column="prob_process_num" />
+        <result property="probProcessChanger"  column="prob_process_changer" />
+        <result property="probProcessCompleteTime" column="prob_process_complete_time" />
+    </resultMap>
+
+    <resultMap  type="BusProbReason" id="BusProbReasonResult">
+        <result property="probReasonId" column="sub_prob_reason_id"  />
+        <result property="probProcessId" column="sub_reason_prob_process_id"  />
+        <result property="probReason" column="sub_prob_reason" />
+    </resultMap>
+
+    <resultMap type="BusProbTempSolution" id="BusProbTempSolutionResult">
+        <result property="probTempSolutionId"    column="sub_prob_temp_solution_id"    />
+        <result property="probProcessId"    column="sub_temp_prob_process_id"    />
+        <result property="probTempSolution"    column="sub_prob_temp_solution"    />
+        <result property="probTempCat"    column="sub_prob_temp_cat"    />
+        <result property="probTempFileNum"    column="sub_prob_temp_file_num"    />
+        <result property="probTempStatus"    column="sub_prob_temp_status"    />
+    </resultMap>
+
+    <resultMap type="BusProbFinalSolution" id="BusProbFinalSolutionResult">
+        <result property="probFinalSolutionId"    column="sub_prob_final_solution_id"    />
+        <result property="probProcessId"    column="sub_final_prob_process_id"    />
+        <result property="probFinalSolution"    column="sub_prob_final_solution"    />
+        <result property="probMi"    column="sub_prob_MI"    />
+        <result property="probFinalStatus"    column="sub_prob_final_status"    />
+    </resultMap>
+
+    <resultMap id="BusProbProcessSubResult" type="BusProbProcess" extends="BusProbProcessResult">
+        <collection property="busProbReason" notNullColumn="sub_prob_reason_id" javaType="com.ruoyi.bus.domain.probListDomain.BusProbReason" resultMap="BusProbReasonResult" />
+        <collection property="busProbTempSolutionList" notNullColumn="sub_prob_temp_solution_id" javaType="java.util.List" resultMap="BusProbTempSolutionResult" />
+        <collection property="busProbFinalSolutionList" notNullColumn="sub_prob_final_solution_id" javaType="java.util.List" resultMap="BusProbFinalSolutionResult" />
+    </resultMap>
+
+    <delete id="deleteBusProbStarByProbListIds" parameterType="String">
+        delete from bus_prob_star where prob_list_id in
+        <foreach item="probListId" collection="array" open="(" separator="," close=")">
+            #{probListId}
+        </foreach>
+    </delete>
+
+    <delete id="deleteBusProbTempSolutionByProbListIds" parameterType="Integer">
+        delete from bus_prob_temp_solution where prob_process_id in
+        <foreach item="probProcessId" collection="array" open="(" separator="," close=")">
+            #{probProcessId}
+        </foreach>
+    </delete>
+    
+    <delete id="deleteBusProbFinalSolutionByProbListIds" parameterType="Integer">
+        delete from bus_prob_final_solution where prob_process_id in
+        <foreach item="probProcessId" collection="array" open="(" separator="," close=")">
+            #{probProcessId}
+        </foreach>
+    </delete>
+
+    <delete id="deleteBusProbReasonByProbProcessIds" parameterType="Integer">
+        delete from bus_prob_reason where prob_process_id in
+        <foreach item="probProcessId" collection="array" open="(" separator="," close=")">
+            #{probProcessId}
+        </foreach>
+    </delete>
+
+    <delete id="deleteBusProbProcessByProbListIds" parameterType="Integer">
+        delete from bus_prob_process where prob_process_id in
+        <foreach item="probProcessId" collection="array" open="(" separator="," close=")">
+            #{probProcessId}
+        </foreach>
+    </delete>
+
+    <delete id="deleteBusProbFinalSolutionByProbProcessId" >
+        delete from bus_prob_final_solution where prob_process_id = #{probProcessId}
+    </delete>
+
+    <delete id="deleteBusProbTempSolutionByProbProcessId" >
+        delete from bus_prob_temp_solution where prob_process_id = #{probProcessId}
+    </delete>
+
+    <delete id="deleteBusProbReasonByProbProcessId">
+        delete from bus_prob_reason where prob_process_id = #{probProcessId}
+    </delete>
+
+    <insert id="batchBusProbStar">
+        insert into bus_prob_star( prob_star_id, prob_list_id, prob_star, prob_star_basis, prob_star_time) values
+        <foreach item="item" index="index" collection="list" separator=",">
+            ( #{item.probStarId}, #{item.probListId}, #{item.probStar}, #{item.probStarBasis}, NOW())
+        </foreach>
+    </insert>
+    <insert id="batchBusProbTempSolution">
+        insert into bus_prob_temp_solution( prob_temp_solution_id, prob_process_id, prob_temp_solution, prob_temp_cat, prob_temp_file_num, prob_temp_status) values
+        <foreach item="item" index="index" collection="list" separator=",">
+            ( #{item.probTempSolutionId}, #{item.probProcessId}, #{item.probTempSolution}, #{item.probTempCat}, #{item.probTempFileNum}, #{item.probTempStatus})
+        </foreach>
+    </insert>
+
+    <insert id="batchBusProbFinalSolution">
+        insert into bus_prob_final_solution( prob_final_solution_id, prob_process_id, prob_final_solution, prob_MI, prob_final_status) values
+		<foreach item="item" index="index" collection="list" separator=",">
+            ( #{item.probFinalSolutionId}, #{item.probProcessId}, #{item.probFinalSolution}, #{item.probMi}, #{item.probFinalStatus})
+        </foreach>
+    </insert>
+
+    <insert id="insertBusProbReason" parameterType="BusProbReason">
+        insert into bus_prob_reason(prob_reason_id, prob_process_id, prob_reason) values
+        (#{probReasonId}, #{probProcessId}, #{probReason})
+    </insert>
+    
+    <insert id="insertBusProbProcess" parameterType="BusProbProcess">
+        insert into bus_prob_process(prob_process_id, prob_list_id, prob_list_num, prob_list_name, prob_list_descrip, prob_current_process, prob_process_num, prob_process_changer) values
+        (#{probProcessId},#{probListId},#{probListNum},#{probListName},#{probListDescrip},#{probCurrentProcess},#{probProcessNum},#{probProcessChanger})
+    </insert>
+    
+    <select id="selectAllProcessAndChangesByProbListId" resultMap="BusProbProcessSubResult">
+        select a.prob_process_id, prob_list_id, prob_list_num, prob_list_name, prob_list_descrip, prob_current_process, prob_process_num, prob_process_changer, prob_process_complete_time,
+            r.prob_reason_id as sub_prob_reason_id, r.prob_process_id as sub_reason_prob_process_id, r.prob_reason as sub_prob_reason,
+            t.prob_temp_solution_id as sub_prob_temp_solution_id, t.prob_process_id as sub_temp_prob_process_id, t.prob_temp_solution as sub_prob_temp_solution,t.prob_temp_cat as sub_prob_temp_cat,t.prob_temp_file_num as sub_prob_temp_file_num,t.prob_temp_status as sub_prob_temp_status,
+            f.prob_final_solution_id as sub_prob_final_solution_id, f.prob_process_id as sub_final_prob_process_id, f.prob_final_solution as sub_prob_final_solution, f.prob_MI as sub_prob_MI, f.prob_final_status as sub_prob_final_status
+            from bus_prob_process a
+            left join bus_prob_reason r on a.prob_process_id = r.prob_process_id
+            left join bus_prob_temp_solution t on t.prob_process_id = a.prob_process_id
+            left join bus_prob_final_solution f on f.prob_process_id = a.prob_process_id
+            where prob_list_id = #{probListId}
+    </select>
+
+    <select id="selectProbProcessIdsByProbListIds" parameterType="String">
+        select prob_process_id from bus_prob_process where prob_list_id in
+        <foreach item="probListId" collection="array" open="(" separator="," close=")">
+            #{probListId}
+        </foreach>
+    </select>
+
+</mapper>

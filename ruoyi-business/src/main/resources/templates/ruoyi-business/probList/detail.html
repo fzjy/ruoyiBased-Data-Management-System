@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+	<th:block th:include="include :: header('故障清单')" />
+</head>
+<body class="white-bg">
+	<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+		<form class="form-horizontal m" id="form-user-edit">
+
+
+			<div class="form-group">
+				<label class="col-sm-3 control-label">故障编号：</label>
+				<div class="col-sm-8">
+					<div class="form-control-static" th:text="${busProbList.probListNum}"></div>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">故障名称：</label>
+				<div class="col-sm-8">
+					<div class="form-control-static" th:text="${busProbList.probListName}"></div>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">是否完成：</label>
+				<div class="col-sm-8">
+					<div class="form-control-static" th:text="${@dict.getLabel('prob_iscompleted', busProbList.probIscompleted)}"></div>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">信息描述：</label>
+				<div class="col-sm-8">
+					<div class="form-control-static" th:text="${busProbList.probListDescrip}"></div>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">信息来源：</label>
+				<div class="col-sm-8">
+					<div class="form-control-static" th:text="${@dict.getLabel('prob_list_source', busProbList.probListSource)}"></div>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">提出时间：</label>
+				<div class="col-sm-8">
+					<div class="input-group date">
+						<div class="form-control-static" th:text="${#dates.format(busProbList.probListStartTime, 'yyyy-MM-dd')}" placeholder="yyyy-MM-dd"></div>
+					</div>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">预计完成时间：</label>
+				<div class="col-sm-8">
+					<div class="input-group date">
+						<div class="form-control-static" th:text="${#dates.format(busProbList.probListEndTime, 'yyyy-MM-dd')}" placeholder="yyyy-MM-dd"></div>
+					</div>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">ATA：</label>
+				<div class="col-sm-8">
+					<div class="form-control-static" th:text="${busProbList.probListAta}"></div>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">责任部门：</label>
+				<div class="col-sm-8">
+					<div class="form-control-static" th:text="${@dict.getLabel('dept_id', busProbList.deptId)}"></div>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">实际完成时间：</label>
+				<div class="col-sm-8">
+					<div class="input-group date">
+						<div class="form-control-static" th:text="${#dates.format(busProbList.probListActualEndTime, 'yyyy-MM-dd')}" placeholder="yyyy-MM-dd"></div>
+					</div>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">专业负责人：</label>
+				<div class="col-sm-8">
+					<div class="form-control-static" th:text="${busProbList.probListHead}"></div>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">部门负责人：</label>
+				<div class="col-sm-8">
+					<div class="form-control-static" th:text="${busProbList.probListOurHead}"></div>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">故障原因：</label>
+				<div class="col-sm-8">
+					<div class="form-control-static" th:text="${busProbList.probListReason}"></div>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">红黄灯状态：</label>
+				<div class="col-sm-8">
+					<div class="form-control-static" th:text="${@dict.getLabel('prob_list_status', busProbListprobListStatus)}"></div>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">影响评估：</label>
+				<div class="col-sm-8" th:with="type=${@dict.getType('prob_list_evaluation')}">
+					<label th:each="dict : ${type}" class="check-box">
+						<input name="probListEvaluation" type="checkbox" th:value="${dict.dictValue}" th:text="${dict.dictLabel}" th:attr="checked=${busProbList.probListEvaluation.contains(dict.dictValue)?true:false}">
+					</label>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">是否优化：</label>
+				<div class="col-sm-8">
+					<div class="form-control-static" th:text="${@dict.getLabel('prob_isoptimize', busProbList.probIsoptimize)}"></div>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">不优化问题原因：</label>
+				<div class="col-sm-8">
+					<div class="form-control-static" th:text="${busProbList.probListClas}"></div>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">标签：</label>
+				<div class="col-sm-8" th:with="type=${@dict.getType('prob_list_tag')}">
+					<label th:each="dict : ${type}" class="check-box">
+						<input name="probListTag" type="checkbox" th:value="${dict.dictValue}" th:text="${dict.dictLabel}" th:attr="checked=${busProbList.probListTag.contains(dict.dictValue)?true:false}">
+					</label>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">备注：</label>
+				<div class="col-sm-8">
+					<div class="form-control-static" th:text="${busProbList.probListTips}"></div>
+				</div>
+			</div>
+
+			<h4 class="form-header h4">星级信息</h4>
+			<tr th:each="busProbStar:${busProbList.busProbStarList}">
+				<div class="form-group">
+					<label class="col-sm-3 control-label">星级：</label>
+					<div class="col-sm-8">
+						<div class="form-control-static" th:text="${@dict.getLabel('prob_star', busProbStar.probStar)}"></div>
+						<span class="help-block m-b-none"><i class="fa fa-info-circle"></i>1.影响评估完整;2.临时措施有效;3.优化方案制定ECP/ECM/MI;4.方案发布ETSI;5.机上贯彻</span>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-3 control-label">依据：</label>
+					<div class="col-sm-8">
+						<div class="form-control-static" th:text="${busProbStar.probStarBasis}"></div>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-3 control-label">星级时间：</label>
+					<div class="col-sm-8">
+						<div class="input-group date">
+							<div class="form-control-static" th:text="${#dates.format(busProbStar.probStarTime, 'yyyy-MM-dd')}" placeholder="yyyy-MM-dd"></div>
+						</div>
+					</div>
+				</div>
+				-------------------------------------
+			</tr>
+
+			<h4 class="form-header h4">临时措施信息</h4>
+			<tr th:each="busProbTempSolution:${busProbList.busProbTempSolutionList}">
+				<div class="form-group">
+					<label class="col-sm-3 control-label">临时措施内容：</label>
+					<div class="col-sm-8">
+						<div class="form-control-static" th:text="${busProbTempSolution.probTempSolution}"></div>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-3 control-label">措施类别：</label>
+					<div class="col-sm-8">
+						<div class="form-control-static" th:text="${busProbTempSolution.probTempCat}"></div>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-3 control-label">文件编号：</label>
+					<div class="col-sm-8">
+						<div class="form-control-static" th:text="${busProbTempSolution.probTempFileNum}"></div>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-3 control-label">状态：</label>
+					<div class="col-sm-8">
+						<div class="form-control-static" th:text="${busProbTempSolution.probTempStatus}"></div>
+					</div>
+				</div>
+			</tr>
+
+			<h4 class="form-header h4">永久措施信息</h4>
+			<tr th:each="busProbFinalSolution:${busProbList.busProbFinalSolutionList}">
+				<div class="form-group">
+					<label class="col-sm-3 control-label">永久措施内容：</label>
+					<div class="col-sm-8">
+						<div class="form-control-static" th:text="${busProbFinalSolution.probFinalSolution}"></div>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-3 control-label">MI编号：</label>
+					<div class="col-sm-8">
+						<div class="form-control-static" th:text="${busProbFinalSolution.probMi}"></div>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-3 control-label">状态：</label>
+					<div class="col-sm-8">
+						<div class="form-control-static" th:text="${busProbFinalSolution.probFinalStatus}"></div>
+					</div>
+				</div>
+			</tr>
+
+		</form>
+	</div>
+	<th:block th:include="include :: footer" />
+
+</body>
+</html>

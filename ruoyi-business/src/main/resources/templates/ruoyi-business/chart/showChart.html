@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8" />
+    <script th:src="@{/echarts.js}"></script>
+    <script th:src="@{/js/jquery.min.js}"></script>
+    <title>图表</title>
+</head>
+<body>
+<div id="monthly-volumn-chart" style="width: 1000px;height:400px;"></div>
+<div id="dept-prob-chart" style="width: 600px;height:400px;"></div>
+<div id="light-prob-chart" style="width: 600px;height:400px;"></div>
+
+<script type="text/javascript">
+    var myChart1 = echarts.init(document.getElementById('monthly-volumn-chart'));
+    var myChart2 = echarts.init(document.getElementById('dept-prob-chart'));
+    var myChart3 = echarts.init(document.getElementById('light-prob-chart'));
+
+    $.get('chart/monthlyVolumnChart').done(function(data) {
+        myChart1.setOption({
+            title: {
+                text: '月度完成情况表',
+                subtext: 'Fake Data',
+                left: 'center'
+            },
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: {
+                    type: 'cross',
+                    crossStyle: {
+                        color: '#999'
+                    }
+                }
+            },
+            toolbox: {
+                feature: {
+                    dataView: { show: true, readOnly: false },
+                    magicType: { show: true, type: ['line', 'bar'] },
+                    restore: { show: true },
+                    saveAsImage: { show: true }
+                }
+            },
+            legend: {
+                data: ['shouldCompleteProbNum', 'isCompletedProbNum']
+            },
+            xAxis: [
+                {
+                    type: 'category',
+                    data: data.monthList,
+                    axisPointer: {
+                        type: 'shadow'
+                    }
+                }
+            ],
+            yAxis: [
+                {
+                    type: 'value',
+                    name: '完成数',
+                    min: 0,
+                    max: 5,
+                    interval: 1,
+                    axisLabel: {
+                        formatter: '{value} 项'
+                    }
+                }
+            ],
+            series: [
+                {
+                    name: '实际完成数',
+                    type: 'bar',
+                    tooltip: {
+                        valueFormatter: function (value) {
+                            return value + ' 项';
+                        }
+                    },
+                    data: data.isCompletedProbNum
+                },
+                {
+                    name: '预计完成数',
+                    type: 'line',
+                    tooltip: {
+                        valueFormatter: function (value) {
+                            return value + ' 项';
+                        }
+                    },
+                    data: data.shouldCompleteProbNum
+                }
+            ]
+        });
+    });
+
+    $.get('chart/deptPieChart').done(function(data) {
+        myChart2.setOption({
+            title: {
+                text: '部门设计故障',
+                subtext: 'Fake Data',
+                left: 'center'
+            },
+            toolbox: {
+                feature: {
+                    saveAsImage: { show: true }
+                }
+            },
+            tooltip: {
+                trigger: 'item'
+            },
+            legend: {
+                orient: 'vertical',
+                left: 'left'
+            },
+            series: [
+                {
+                    name: 'Access From',
+                    type: 'pie',
+                    radius: '50%',
+                    data: data,
+                    emphasis: {
+                        itemStyle: {
+                            shadowBlur: 10,
+                            shadowOffsetX: 0,
+                            shadowColor: 'rgba(0, 0, 0, 0.5)'
+                        }
+                    }
+                }
+            ]
+
+        });
+    });
+
+    $.get('chart/lightPieChart').done(function(data) {
+        myChart3.setOption({
+            title: {
+                text: 'Referer of a Website',
+                subtext: 'Fake Data',
+                left: 'center'
+            },
+            toolbox: {
+                feature: {
+                    saveAsImage: { show: true }
+                }
+            },
+            tooltip: {
+                trigger: 'item'
+            },
+            legend: {
+                orient: 'vertical',
+                left: 'left'
+            },
+            series: [
+                {
+                    name: 'Access From',
+                    type: 'pie',
+                    radius: '50%',
+                    data: data,
+                    emphasis: {
+                        itemStyle: {
+                            shadowBlur: 10,
+                            shadowOffsetX: 0,
+                            shadowColor: 'rgba(0, 0, 0, 0.5)'
+                        }
+                    }
+                }
+            ]
+
+        });
+    });
+
+</script>
+
+</body>
+</html>

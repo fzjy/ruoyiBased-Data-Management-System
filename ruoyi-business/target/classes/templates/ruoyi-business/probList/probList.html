@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('故障清单列表')" />
+</head>
+<body class="gray-bg">
+     <div class="container-div">
+        <div class="row">
+            <div class="col-sm-12 search-collapse">
+                <form id="formId">
+                    <div class="select-list">
+                        <ul>
+                            <li>
+                                <label>故障名称：</label>
+                                <input type="text" name="probListName"/>
+                            </li>
+                            <li>
+                                <label>是否完成：</label>
+                                <select name="probIscompleted" th:with="type=${@dict.getType('prob_iscompleted')}">
+                                    <option value="">所有</option>
+                                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                                </select>
+                            </li>
+                            <li>
+                                <label>是否优化：</label>
+                                <select name="probIsoptimize" th:with="type=${@dict.getType('prob_isoptimize')}">
+                                    <option value="">所有</option>
+                                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                                </select>
+                            </li>
+                            <li>
+                                <label>预计完成时间：</label>
+                                <input type="text" class="time-input" placeholder="请选择预计完成时间" name="probListEndTime"/>
+                            </li>
+                            <li>
+                                <label>ATA：</label>
+                                <input type="text" name="probListAta"/>
+                            </li>
+                            <li>
+                                <label>专业负责人：</label>
+                                <input type="text" name="probListHead"/>
+                            </li>
+                            <li>
+                                <label>试飞运营部负责人：</label>
+                                <input type="text" name="probListOurHead"/>
+                            </li>
+                            <li>
+                                <label>红黄灯状态：</label>
+                                <select name="probListStatus" th:with="type=${@dict.getType('prob_list_status')}">
+                                    <option value="">所有</option>
+                                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                                </select>
+                            </li>
+                            <li>
+                                <label>星级：</label>
+                                <select name="probStar" th:with="type=${@dict.getType('prob_star')}">
+                                    <option value="">所有</option>
+                                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                                </select>
+                            </li>
+                            <li>
+                                <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                                <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+                            </li>
+                        </ul>
+                    </div>
+                </form>
+            </div>
+
+            <div class="btn-group-sm" id="toolbar" role="group">
+                <a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="ruoyi-business:probList:add">
+                    <i class="fa fa-plus"></i> 添加
+                </a>
+                <a class="btn btn-primary single disabled" onclick="$.operate.edit()" shiro:hasPermission="ruoyi-business:probList:edit">
+                    <i class="fa fa-edit"></i> 修改
+                </a>
+                <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="ruoyi-business:probList:remove">
+                    <i class="fa fa-remove"></i> 删除
+                </a>
+                <a class="btn btn-info" onclick="$.table.importExcel()" shiro:hasPermission="ruoyi-business:probList:import">
+                    <i class="fa fa-upload"></i> 导入
+                </a>
+                <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="ruoyi-business:probList:export">
+                    <i class="fa fa-download"></i> 导出
+                </a>
+            </div>
+            <div class="col-sm-12 select-table table-striped">
+                <table id="bootstrap-table"></table>
+            </div>
+        </div>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script th:inline="javascript">
+        var detailFlag = [[${@permission.hasPermi('ruoyi-business:probList:detail')}]];
+        var editFlag = [[${@permission.hasPermi('ruoyi-business:probList:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('ruoyi-business:probList:remove')}]];
+        var probIscompletedDatas = [[${@dict.getType('prob_iscompleted')}]];
+        var deptIdDatas = [[${@dict.getType('dept_id')}]];
+        var probListStatusDatas = [[${@dict.getType('prob_list_status')}]];
+        var probStarDatas = [[${@dict.getType('prob_star')}]];
+        var probListEvaluationDatas = [[${@dict.getType('prob_list_evaluation')}]];
+        var probListTagDatas = [[${@dict.getType('prob_list_tag')}]];
+        var prefix = ctx + "ruoyi-business/probList";
+
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+                exportUrl: prefix + "/export",
+                detailUrl: prefix + "/detail/{id}",
+                modalName: "故障清单",
+                columns: [{
+                    checkbox: true
+                },
+                    {
+                        field: 'probListId',
+                        title: '故障id',
+                        visible: false
+                    },
+                    {
+                        field: 'probListName',
+                        title: '故障名称'
+                    },
+                    {
+                        field: 'probIscompleted',
+                        title: '是否完成',
+                        formatter: function(value, row, index) {
+                            return $.table.selectDictLabel(probIscompletedDatas, value);
+                        }
+                    },
+                    {
+                        field: 'probListEndTime',
+                        title: '预计完成时间'
+                    },
+                    {
+                        field: 'probListAta',
+                        title: 'ATA'
+                    },
+                    {
+                        field: 'deptId',
+                        title: '责任部门',
+                        formatter: function(value, row, index) {
+                            return $.table.selectDictLabel(deptIdDatas, value);
+                        }
+                    },
+                    {
+                        field: 'probListHead',
+                        title: '专业负责人'
+                    },
+                    {
+                        field: 'probListOurHead',
+                        title: '部门负责人'
+                    },
+                    {
+                        field: 'probListStatus',
+                        title: '红黄灯状态',
+                        formatter: function(value, row, index) {
+                            return $.table.selectDictLabel(probListStatusDatas, value);
+                        }
+                    },
+                    {
+                        field: 'probListEvaluation',
+                        title: '影响评估',
+                        formatter: function(value, row, index) {
+                            return $.table.selectDictLabels(probListEvaluationDatas, value);
+                        }
+                    },
+                    {
+                        field: 'probStar',
+                        title: '星级',
+                        formatter: function(value, row, index) {
+                            return $.table.selectDictLabel(probStarDatas, value);
+                        }
+                    },
+                    {
+                        field: 'probListTag',
+                        title: '标签',
+                        formatter: function(value, row, index) {
+                            return $.table.selectDictLabels(probListTagDatas, value);
+                        }
+                    },
+                {
+                    title: '操作',
+                    align: 'center',
+                    formatter: function(value, row, index) {
+                        var actions = [];
+                        actions.push('<a class="btn btn-warning btn-xs ' + detailFlag + '" href="javascript:void(0)" onclick="$.operate.detail(\'' + row.probListId + '\')"><i class="fa fa-search"></i>详细</a>');
+                        actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="$.operate.edit(\'' + row.probListId + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.probListId + '\')"><i class="fa fa-remove"></i>删除</a>');
+                        return actions.join('');
+                    }
+                }]
+            };
+            $.table.init(options);
+        });
+    </script>
+</body>
+</html>

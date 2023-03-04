@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <th:block th:include="include :: header('新增故障清单')" />
+    <th:block th:include="include :: datetimepicker-css" />
+</head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-probList-add">
+            <h4 class="form-header h4">故障清单信息</h4>
+            <div class="form-group">
+                <label class="col-sm-3 control-label is-required">故障编号：</label>
+                <div class="col-sm-8">
+                    <input name="probListNum" class="form-control" type="text" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label is-required">故障名称：</label>
+                <div class="col-sm-8">
+                    <input name="probListName" class="form-control" type="text" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">是否完成：</label>
+                <div class="col-sm-8">
+                    <select name="probIscompleted" class="form-control m-b" th:with="type=${@dict.getType('prob_iscompleted')}">
+                        <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">信息描述：</label>
+                <div class="col-sm-8">
+                    <input name="probListDescrip" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">信息来源：</label>
+                <div class="col-sm-8">
+                    <select name="probListSource" class="form-control m-b" th:with="type=${@dict.getType('prob_list_source')}">
+                        <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">提出时间：</label>
+                <div class="col-sm-8">
+                    <div class="input-group date">
+                        <input name="probListStartTime" class="form-control" placeholder="yyyy-MM-dd" type="text" >
+                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label" is-required>预计完成时间：</label>
+                <div class="col-sm-8">
+                    <div class="input-group date">
+                        <input name="probListEndTime" class="form-control" placeholder="yyyy-MM-dd" type="text" required>
+                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">ATA：</label>
+                <div class="col-sm-8">
+                    <input name="probListAta" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">责任部门：</label>
+                <div class="col-sm-8">
+                    <select name="deptId" class="form-control m-b" th:with="type=${@dict.getType('dept_id')}">
+                        <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">实际完成时间：</label>
+                <div class="col-sm-8">
+                    <div class="input-group date">
+                        <input name="probListActualEndTime" class="form-control" placeholder="yyyy-MM-dd" type="text">
+                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label is-required">专业负责人：</label>
+                <div class="col-sm-8">
+                    <input name="probListHead" class="form-control" type="text" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label is-required">部门负责人：</label>
+                <div class="col-sm-8">
+                    <input name="probListOurHead" class="form-control" type="text" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">故障原因：</label>
+                <div class="col-sm-8">
+                    <input name="probListReason" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">红黄灯状态：</label>
+                <div class="col-sm-8">
+                    <div class="radio-box" th:each="dict : ${@dict.getType('prob_list_status')}">
+                        <input type="radio" th:id="${'probListStatus_' + dict.dictCode}" name="probListStatus" th:value="${dict.dictValue}" th:checked="${dict.default}">
+                        <label th:for="${'probListStatus_' + dict.dictCode}" th:text="${dict.dictLabel}"></label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">影响评估：</label>
+                <div class="col-sm-8" th:with="type=${@dict.getType('prob_list_evaluation')}">
+                    <label th:each="dict : ${type}" class="check-box">
+                        <input name="probListEvaluation" type="checkbox" th:value="${dict.dictValue}" th:text="${dict.dictLabel}">
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">是否优化：</label>
+                <div class="col-sm-8">
+                    <select name="probIsoptimize" class="form-control m-b" th:with="type=${@dict.getType('prob_isoptimize')}">
+                        <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">不优化问题原因：</label>
+                <div class="col-sm-8">
+                    <input name="probListClas" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">标签：</label>
+                <div class="col-sm-8" th:with="type=${@dict.getType('prob_list_tag')}">
+                    <label th:each="dict : ${type}" class="check-box">
+                        <input name="probListTag" type="checkbox" th:value="${dict.dictValue}" th:text="${dict.dictLabel}">
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">备注：</label>
+                <div class="col-sm-8">
+                    <input name="probListTips" class="form-control" type="text">
+                </div>
+            </div>
+
+            <h4 class="form-header h4">星级信息</h4>
+            <div class="form-group">
+                <label class="col-sm-3 control-label is-required">星级：</label>
+                <div class="col-sm-8">
+                    <select name="busProbStarList[0].probStar" class="form-control m-b" th:with="type=${@dict.getType('prob_star')}" required>
+                        <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                    </select>
+                    <span class="help-block m-b-none"><i class="fa fa-info-circle"></i>1.影响评估完整;2.临时措施有效;3.优化方案制定ECP/ECM/MI;4.方案发布ETSI;5.机上贯彻</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label is-required">依据：</label>
+                <div class="col-sm-8">
+                    <input name="busProbStarList[0].probStarBasis" class="form-control" type="text" required>
+                </div>
+            </div>
+            <h4 class="form-header h4">临时措施信息</h4>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">临时措施内容：</label>
+                <div class="col-sm-8">
+                    <input name="busProbTempSolutionList[0].probTempSolution" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">措施类别：</label>
+                <div class="col-sm-8">
+                    <input name="busProbTempSolutionList[0].probTempCat" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">文件编号：</label>
+                <div class="col-sm-8">
+                    <input name="busProbTempSolutionList[0].probTempFileNum" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">状态：</label>
+                <div class="col-sm-8">
+                    <input name="busProbTempSolutionList[0].probTempStatus" class="form-control" type="text">
+                </div>
+            </div>
+
+            <h4 class="form-header h4">最终措施信息</h4>
+            <div class="row">
+                <div class="col-sm-12">
+                    <button type="button" class="btn btn-white btn-sm" onclick="addRow()"><i class="fa fa-plus"> 增加</i></button>
+                    <button type="button" class="btn btn-white btn-sm" onclick="sub.delRow()"><i class="fa fa-minus"> 删除</i></button>
+                    <div class="col-sm-12 select-table table-striped">
+                        <table id="bootstrap-table"></table>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <th:block th:include="include :: footer" />
+    <th:block th:include="include :: datetimepicker-js" />
+    <script th:inline="javascript">
+        var prefix = ctx + "ruoyi-business/probList"
+        $("#form-probList-add").validate({
+            focusCleanup: true
+        });
+
+        function submitHandler() {
+            if ($.validate.form()) {
+                $.operate.save(prefix + "/add", $('#form-probList-add').serialize());
+            }
+        }
+
+        $("input[name='probListStartTime']").datetimepicker({
+            format: "yyyy-mm-dd",
+            minView: "month",
+            autoclose: true
+        });
+
+        $("input[name='probListEndTime']").datetimepicker({
+            format: "yyyy-mm-dd",
+            minView: "month",
+            autoclose: true
+        });
+
+        $("input[name='probListActualEndTime']").datetimepicker({
+            format: "yyyy-mm-dd",
+            minView: "month",
+            autoclose: true
+        });
+
+        $(function() {
+            var options = {
+                pagination: false,
+                showSearch: false,
+                showRefresh: false,
+                showToggle: false,
+                showColumns: false,
+                sidePagination: "client",
+                columns: [{
+                    checkbox: true
+                },
+                {
+                    field: 'index',
+                    align: 'center',
+                    title: "序号",
+                    formatter: function (value, row, index) {
+                    	var columnIndex = $.common.sprintf("<input type='hidden' name='index' value='%s'>", $.table.serialNumber(index));
+                    	return columnIndex + $.table.serialNumber(index);
+                    }
+                },
+                {
+                    field: 'probFinalSolution',
+                    align: 'center',
+                    title: '内容',
+                    formatter: function(value, row, index) {
+                        var html = $.common.sprintf("<input class='form-control' type='text' name='busProbFinalSolutionList[%s].probFinalSolution' value='%s'>", index, value);
+                        return html;
+                    }
+                },
+                {
+                    field: 'probMi',
+                    align: 'center',
+                    title: 'MI编号',
+                    formatter: function(value, row, index) {
+                        var html = $.common.sprintf("<input class='form-control' type='text' name='busProbFinalSolutionList[%s].probMi' value='%s'>", index, value);
+                        return html;
+                    }
+                },
+                {
+                    field: 'probFinalStatus',
+                    align: 'center',
+                    title: '状态',
+                    formatter: function(value, row, index) {
+                        var html = $.common.sprintf("<input class='form-control' type='text' name='busProbFinalSolutionList[%s].probFinalStatus' value='%s'>", index, value);
+                        return html;
+                    }
+                },
+                {
+                    title: '操作',
+                    align: 'center',
+                    formatter: function(value, row, index) {
+                        var value = $.common.isNotEmpty(row.index) ? row.index : $.table.serialNumber(index);
+                        return '<a class="btn btn-danger btn-xs" href="javascript:void(0)" onclick="sub.delRowByIndex(\'' + value + '\')"><i class="fa fa-remove"></i>删除</a>';
+                    }
+                }]
+            };
+            $.table.init(options);
+        });
+
+        function addRow() {
+            var count = $("#" + table.options.id).bootstrapTable('getData').length;
+            var row = {
+                index: $.table.serialNumber(count),
+                probFinalSolution: "",
+                probMi: "",
+                probFinalStatus: "",
+            }
+            sub.addRow(row);
+        }
+    </script>
+</body>
+</html>
